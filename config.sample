@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# SSL_PATH is for a path where private and public keys are
+# Must use a full path
+SSL_PATH=""
+
+# PFC_OUTPUT is for a path where converted PFC certificates will be stored
+# Must use a full path
+PFC_OUTPUT=""

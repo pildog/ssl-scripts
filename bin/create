@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+source $(dirname "$0")/../lib.sh
+
+if [ ! -f $(dirname "$0")/../$CONFIG_FILE ]; then
+    echo -e "${RED}Config file not found.${NC}"
+    exit 0
+fi
+
+source $(dirname "$0")/../$CONFIG_FILE
+
+SCRIPT_NAME=$(basename "$0")
+
+if [ $# -ne 2 ]; then
+    echo "$SCRIPT_NAME [E-mail] [Domain]"
+    echo "Example: $SCRIPT_NAME your@email.com yourdomain.com"
+    exit 1
+fi
+
+DOMAIN="*.$2"
+
+echo -e "> ${GREEN}Creating SSL Certificate${NC}."
+
+sudo certbot certonly --manual --preferred-challenges=dns --email "$1" --server https://acme-v02.api.letsencrypt.org/directory --agree-tos -d "${DOMAIN}"
+
+echo -e "> Coping certificate files to Dropbox folder for ${GREEN}$2${NC}"
+sudo cp /etc/letsencrypt/live/$2/fullchain.pem "${SSL_PATH}"/wild-$2.fullchain.pem
+sudo cp /etc/letsencrypt/live/$2/privkey.pem "${SSL_PATH}"/wild-$2.privkey.pem
+
+sudo chown $(whoami) "${SSL_PATH}"/wild-$2.fullchain.pem
+sudo chown $(whoami) "${SSL_PATH}"/wild-$2.privkey.pem
+
+echo -e "> ${GREEN}Job done.${NC}"
