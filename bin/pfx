@@ -30,8 +30,7 @@ if [ ! -f $CERT_PATH ]; then
     exit 0
 fi
 
-# for unixcctv share
 echo -e "> Exporting SSL certificate in PFX format for ${GREEN}$1${NC}"
-openssl pkcs12 -inkey "${PRIVATE_KEY_PATH}" -in "${CERT_PATH}" -export -out "${PFC_OUTPUT}"/wild-$1-$(date +"%Y-%m-%d").pfx
+openssl pkcs12 -export -certpbe PBE-SHA1-3DES -keypbe PBE-SHA1-3DES -nomac -inkey "${PRIVATE_KEY_PATH}" -in "${CERT_PATH}" -export -out "${PFC_OUTPUT}"/wild-$1-$(date +"%Y-%m-%d").pfx
 
 echo -e "> ${GREEN}Job done.${NC}"
